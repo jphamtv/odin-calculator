@@ -16,10 +16,27 @@ let calculationResult = null;
 let continuedCalculation = false;
 
 
+
+
 function updateDisplay() {
+  if (currentValue.length <= 9) {
+    display.style.fontSize = '42px';
+  } else if (currentValue.length < 11) {
+    display.style.fontSize = '36px';
+  } else if (currentValue.length < 13) {
+    display.style.fontSize = '30px';
+  } else if (currentValue.length < 16) {
+    display.style.fontSize = '24px';
+  } else if (currentValue.length <= 20) {
+    display.style.fontSize = '18px';
+  } 
+
   display.textContent = currentValue;
 }
 
+function roundAccurately(num, places) {
+  return parseFloat(Math.round(num + 'e' + places) + 'e-' + places);
+}
 
 function clear() {
   previousValue = null;
@@ -27,6 +44,7 @@ function clear() {
   operator = null;
   lastOperator = null;
   calculationResult = null;
+  display.style.fontSize = '42px';
   display.textContent = '0';
 }
 
@@ -74,39 +92,56 @@ function handleOperatorClick(input) {
   }
 }
 
+function countDigits(str) {
+  if (str === null) {
+    return 0;
+  } else {
+    let digits = str.match(/\d/g);
+    return digits.length;    
+  }
+}
+
 
 function handleNumberClick(button) {
   if (operator === null) {
     continuedCalculation = false;
   }
 
+  let currentDigits = countDigits(currentValue);
+  
   if (currentValue === null && button !== '.') {
     currentValue = button;
     lastOperand = currentValue;
   } else if (button === '.' && currentValue.includes('.')) {
     return;
+  } else if (currentDigits >= 20) {
+    return;
   } else {
     currentValue += button;
     lastOperand = currentValue;
+    console.log(typeof(currentValue));
+    console.log(currentValue);
+    console.log(currentValue.length);
   }
   updateDisplay();
 }
 
 
 function handleEqualClick() {
-  console.log(``);  
-  console.log(`BEFORE:`);  
-  console.log(`currentValue ${currentValue}`);
-  console.log(`previousValue ${previousValue}`);
-  console.log(`operator ${operator}`);
-  console.log(`lastOperator ${lastOperator}`);
-  console.log(`lastOperand ${lastOperand}`);
-  console.log(`calculationResult ${calculationResult}`);
-  console.log(`continuedCalculation ${continuedCalculation}`);
-  console.log(``);  
+  // console.log(``);  
+  // console.log(`BEFORE:`);  
+  // console.log(`currentValue ${currentValue}`);
+  // console.log(`previousValue ${previousValue}`);
+  // console.log(`operator ${operator}`);
+  // console.log(`lastOperator ${lastOperator}`);
+  // console.log(`lastOperand ${lastOperand}`);
+  // console.log(`calculationResult ${calculationResult}`);
+  // console.log(`continuedCalculation ${continuedCalculation}`);
+  // console.log(``);  
   if (currentValue && previousValue && !continuedCalculation) {
     console.log(`equal 1st condition`)
-    currentValue = performCalculation(operator);
+    result = performCalculation(operator);
+    currentValue = roundAccurately(result,8).toString();
     calculationResult = currentValue;
     continuedCalculation = true;
     updateDisplay();
@@ -119,7 +154,8 @@ function handleEqualClick() {
     console.log(`equal 2-A condition`)
     currentValue = lastOperand;
     previousValue = calculationResult;
-    currentValue = performCalculation(operator);
+    result = performCalculation(operator);
+    currentValue = roundAccurately(result,8).toString();
     calculationResult = currentValue;
     continuedCalculation = true;
     updateDisplay();
@@ -131,7 +167,8 @@ function handleEqualClick() {
   } else if (currentValue && previousValue && continuedCalculation && !lastOperand) {
     console.log(`equal 2-B condition`)
     previousValue = calculationResult;
-    currentValue = performCalculation(operator);
+    result = performCalculation(operator);
+    currentValue = roundAccurately(result,8).toString();
     calculationResult = currentValue;
     continuedCalculation = true;
     updateDisplay();
@@ -145,7 +182,8 @@ function handleEqualClick() {
   } else if (currentValue === null && previousValue) {
     console.log(`equal 3rd condition`)
     currentValue = previousValue;
-    currentValue = performCalculation(operator);
+    result = performCalculation(operator);
+    currentValue = roundAccurately(result,8).toString();
     calculationResult = currentValue;
     lastOperator = operator;
     lastOperand = previousValue;
@@ -158,7 +196,8 @@ function handleEqualClick() {
     operator = lastOperator;
     previousValue = calculationResult;
     currentValue = lastOperand;
-    currentValue = performCalculation(operator);
+    result = performCalculation(operator);
+    currentValue = roundAccurately(result, 8).toString();
     calculationResult = currentValue;
     lastOperator = operator;
     continuedCalculation === true;
@@ -168,16 +207,16 @@ function handleEqualClick() {
     console.log(`equal 3rd condition`)
     return;
   }
-  console.log(``);  
-  console.log(`AFTER:`);  
-  console.log(`currentValue ${currentValue}`);
-  console.log(`previousValue ${previousValue}`);
-  console.log(`operator ${operator}`);
-  console.log(`lastOperator ${lastOperator}`);
-  console.log(`lastOperand ${lastOperand}`);
-  console.log(`calculationResult ${calculationResult}`);
-  console.log(`continuedCalculation ${continuedCalculation}`);
-  console.log(``);  
+  // console.log(``);  
+  // console.log(`AFTER:`);  
+  // console.log(`currentValue ${currentValue}`);
+  // console.log(`previousValue ${previousValue}`);
+  // console.log(`operator ${operator}`);
+  // console.log(`lastOperator ${lastOperator}`);
+  // console.log(`lastOperand ${lastOperand}`);
+  // console.log(`calculationResult ${calculationResult}`);
+  // console.log(`continuedCalculation ${continuedCalculation}`);
+  // console.log(``);  
 }  
 
 

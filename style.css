@@ -19,6 +19,7 @@ html {
 body {
   display: flex;
   height: 100vh;
+  background-color: rgb(22, 22, 22);
 }
 
 .container {
@@ -29,20 +30,21 @@ body {
   width: 240px;
   height: 320px;  
   margin: auto;
-  /* border: 1px solid black; */
+  border-radius: 10px;
 }
 
 #display {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: flex-end;
   background-color: rgb(47, 47, 47);
   color: white;
   width: 240px;
   height: 80px;
   padding-right: 16px;
+  padding-bottom: 4px;
   text-align: right;
-  font-size: 24px;
+  font-size: 42px;
   font-family: Arial, Helvetica, sans-serif;
   border-radius: 10px 10px 0 0;
 }
@@ -66,6 +68,15 @@ button {
   font-size: 24px;
 }
 
+.operator:active,
+#btn-equal:active {
+  background-color: rgb(187, 129, 20);
+}
+
+.operator:focus {
+  border: 1.5px solid black;
+}
+
 #btn-equal {
   background-color: orange;
   color: white;
@@ -79,10 +90,19 @@ button {
   color: white;
 }
 
+.number:active,
+#btn-decimal:active {
+  background-color: lightgray;
+}
+
 .top-3-btn {
   background-color: rgb(72, 72, 72);
   color: white;
   font-size: 16px;
+}
+
+.top-3-btn:active {
+  background-color: gray;
 }
 
 #btn-zero {
