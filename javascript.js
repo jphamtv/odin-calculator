@@ -7,9 +7,11 @@ const clearButton = document.getElementById('btn-clear');
 const percentButton = document.getElementById('btn-percent');
 const toggleSignButton = document.getElementById('btn-sign');
 
-let currentValue = '0';
+let currentValue = null;
 let previousValue = null;
 let operator = null;
+let lastOperator = null;
+let lastOperand = null;
 let calculationResult = null;
 let continuedCalculation = false;
 
@@ -21,9 +23,11 @@ function updateDisplay() {
 
 function clear() {
   previousValue = null;
-  currentValue = '0';
+  currentValue = null;
   operator = null;
-  updateDisplay();
+  lastOperator = null;
+  calculationResult = null;
+  display.textContent = '0';
 }
 
 
@@ -43,22 +47,30 @@ function handleOperatorClick(input) {
   if (!continuedCalculation) {
     if (!previousValue) {
       previousValue = currentValue;
+      lastOperand = currentValue;
     } else if (previousValue) {
+      lastOperand = currentValue;
       currentValue = performCalculation(operator);
       updateDisplay();
       previousValue = currentValue;
     }
     operator = input;
-    currentValue = '0';
+    lastOperator = operator;
+    lastOperand = currentValue;
+    currentValue = null;
   } else if (continuedCalculation && !operator) {
     previousValue = calculationResult;
     operator = input;
+    lastOperator = operator;
+    lastOperand = currentValue;
   } else if (continuedCalculation && operator) {
     currentValue = performCalculation(operator);
     updateDisplay();
     previousValue = currentValue;
     operator = input;
-    currentValue = '0';
+    lastOperator = operator;
+    currentValue = null;
+    lastOperand = currentValue;
   }
 }
 
@@ -68,46 +80,101 @@ function handleNumberClick(button) {
     continuedCalculation = false;
   }
 
-  if (currentValue === '0' && button !== '.') {
+  if (currentValue === null && button !== '.') {
     currentValue = button;
+    lastOperand = currentValue;
   } else if (button === '.' && currentValue.includes('.')) {
     return;
   } else {
     currentValue += button;
+    lastOperand = currentValue;
   }
   updateDisplay();
 }
 
 
 function handleEqualClick() {
+  console.log(``);  
   console.log(`BEFORE:`);  
   console.log(`currentValue ${currentValue}`);
   console.log(`previousValue ${previousValue}`);
   console.log(`operator ${operator}`);
+  console.log(`lastOperator ${lastOperator}`);
+  console.log(`lastOperand ${lastOperand}`);
   console.log(`calculationResult ${calculationResult}`);
   console.log(`continuedCalculation ${continuedCalculation}`);
   console.log(``);  
-  if (currentValue && previousValue) {
-      currentValue = performCalculation(operator);
-      calculationResult = currentValue;
-      continuedCalculation = true;
-      updateDisplay();
-      currentValue = '0';
-      operator = null;
-      previousValue = null;
-    // Delete this else if section if can't get to work
-  } else if (currentValue === 0 && previousValue) {
+  if (currentValue && previousValue && !continuedCalculation) {
+    console.log(`equal 1st condition`)
+    currentValue = performCalculation(operator);
+    calculationResult = currentValue;
+    continuedCalculation = true;
+    updateDisplay();
+    currentValue = null;
+    lastOperator = operator;
+    operator = null; 
+    previousValue = null; 
+  
+  } else if (currentValue && previousValue && continuedCalculation && lastOperand) {
+    console.log(`equal 2-A condition`)
+    currentValue = lastOperand;
+    previousValue = calculationResult;
+    currentValue = performCalculation(operator);
+    calculationResult = currentValue;
+    continuedCalculation = true;
+    updateDisplay();
+    currentValue = null;
+    lastOperator = operator;
+    operator = null; 
+    previousValue = null; 
+
+  } else if (currentValue && previousValue && continuedCalculation && !lastOperand) {
+    console.log(`equal 2-B condition`)
+    previousValue = calculationResult;
+    currentValue = performCalculation(operator);
+    calculationResult = currentValue;
+    continuedCalculation = true;
+    updateDisplay();
+    currentValue = lastOperand;
+    lastOperator = operator;
+    lastOperand = currentValue;
+    operator = null; 
+    previousValue = null; 
+
+    // This works once
+  } else if (currentValue === null && previousValue) {
+    console.log(`equal 3rd condition`)
     currentValue = previousValue;
-    performCalculation(operator);
+    currentValue = performCalculation(operator);
+    calculationResult = currentValue;
+    lastOperator = operator;
+    lastOperand = previousValue;
     continuedCalculation === true;
     updateDisplay(); 
+
+    // Delete this if issues
+  } else if (continuedCalculation && lastOperator) {
+    console.log(`equal 4th condition`)
+    operator = lastOperator;
+    previousValue = calculationResult;
+    currentValue = lastOperand;
+    currentValue = performCalculation(operator);
+    calculationResult = currentValue;
+    lastOperator = operator;
+    continuedCalculation === true;
+    updateDisplay(); 
+
   } else {
+    console.log(`equal 3rd condition`)
     return;
   }
+  console.log(``);  
   console.log(`AFTER:`);  
   console.log(`currentValue ${currentValue}`);
   console.log(`previousValue ${previousValue}`);
   console.log(`operator ${operator}`);
+  console.log(`lastOperator ${lastOperator}`);
+  console.log(`lastOperand ${lastOperand}`);
   console.log(`calculationResult ${calculationResult}`);
   console.log(`continuedCalculation ${continuedCalculation}`);
   console.log(``);  
